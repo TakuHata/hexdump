@@ -99,23 +99,55 @@ func ProcessFile(path string, noAscii bool) {
 }
 
 func HexDump(b []byte, noAscii bool, baseOffset int) string {
+	if len(b) == 0 {
+		return ""
+	}
+
+	const hextable = "0123456789abcdef"
 	var sb strings.Builder
+
+	bytesPerLine := 10 + 3*16 + 1
+	if !noAscii {
+		bytesPerLine += 2 + 16 + 1
+	}
+	numLines := (len(b) + 15) / 16
+	sb.Grow(numLines * bytesPerLine)
+
+	var offsetBuf [8]byte
+	var hexBuf [2]byte
+
 	for i := 0; i < len(b); i += 16 {
 		end := i + 16
 		if end > len(b) {
 			end = len(b)
 		}
 		line := b[i:end]
-		fmt.Fprintf(&sb, "%08x: ", baseOffset+i)
+		offset := baseOffset + i
+		offsetBuf[0] = hextable[(offset>>28)&0x0F]
+		offsetBuf[1] = hextable[(offset>>24)&0x0F]
+		offsetBuf[2] = hextable[(offset>>20)&0x0F]
+		offsetBuf[3] = hextable[(offset>>16)&0x0F]
+		offsetBuf[4] = hextable[(offset>>12)&0x0F]
+		offsetBuf[5] = hextable[(offset>>8)&0x0F]
+		offsetBuf[6] = hextable[(offset>>4)&0x0F]
+		offsetBuf[7] = hextable[offset&0x0F]
+
+		sb.Write(offsetBuf[:])
+		sb.WriteString(": ")
+
 		for j := 0; j < 16; j++ {
 			if j < len(line) {
-				fmt.Fprintf(&sb, "%02x ", line[j])
+				v := line[j]
+				hexBuf[0] = hextable[(v>>4)&0x0F]
+				hexBuf[1] = hextable[v&0x0F]
+				sb.Write(hexBuf[:])
+				sb.WriteByte(' ')
 			} else {
-				fmt.Fprintf(&sb, "   ")
+				sb.WriteString("   ")
 			}
 		}
 		if !noAscii {
-			fmt.Fprintf(&sb, "| ")
+			sb.WriteString("| ")
 			for _, c := range line {
 				if c >= 32 && c <= 126 {
 					sb.WriteByte(c)

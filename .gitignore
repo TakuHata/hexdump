@@ -1,0 +1,8 @@
+build/hexdump-darwin-amd64
+build/hexdump-darwin-arm64
+build/hexdump-linux-amd64
+build/hexdump-linux-arm64
+build/hexdump-windows-386.exe
+build/hexdump-windows-amd64.exe
+hexdump
+hexdump.exe
