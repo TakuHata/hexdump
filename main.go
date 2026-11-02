@@ -102,7 +102,7 @@ func ProcessFile(path string, noAscii bool) {
 	defer file.Close()
 
 	buffer := make([]byte, 4096)
-	globalOffset := uint32(0)
+	globalOffset := uint64(0)
 
 	for {
 		n, err := file.Read(buffer)
@@ -112,7 +112,7 @@ func ProcessFile(path string, noAscii bool) {
 
 			fmt.Print(dump)
 
-			globalOffset += uint32(n)
+			globalOffset += uint64(n)
 		}
 
 		if err == io.EOF {
@@ -126,7 +126,7 @@ func ProcessFile(path string, noAscii bool) {
 	}
 }
 
-func HexDump(b []byte, noAscii bool, baseOffset uint32) string {
+func HexDump(b []byte, noAscii bool, baseOffset uint64) string {
 	if len(b) == 0 {
 		return ""
 	}
@@ -149,7 +149,7 @@ func HexDump(b []byte, noAscii bool, baseOffset uint32) string {
 			end = len(b)
 		}
 		line := b[i:end]
-		offset := baseOffset + uint32(i)
+		offset := baseOffset + uint64(i)
 		offsetBuf[0] = hextable[(offset>>28)&0x0F]
 		offsetBuf[1] = hextable[(offset>>24)&0x0F]
 		offsetBuf[2] = hextable[(offset>>20)&0x0F]
