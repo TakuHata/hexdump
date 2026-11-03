@@ -1,74 +1,45 @@
 # hexdump
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Go-1.21%2B-00ADD8?logo=go" alt="Go version" />
-  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563" alt="Platforms" />
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
-</p>
+A small command-line utility for printing binary data in a readable hex dump format.
 
-A small Go utility for viewing binary data in a readable hex dump format directly from the terminal.
+## Overview
 
-## Why use it?
-
-`hexdump` is useful when you want to inspect raw bytes, debug binary files, analyze protocol payloads, or quickly check the contents of a file without opening it in a binary editor.
+`hexdump` displays file contents or hex-encoded input as a classic hex dump with optional ASCII output. It is useful for debugging binary files, protocol payloads, and raw byte sequences.
 
 ## Features
 
-- dump binary data as `offset: hex bytes | ascii |`
-- read input from a file with `-f`
-- decode a hex string from command-line arguments
-- hide the ASCII column with `-a`
-- produce builds for multiple platforms
+- dump a file as `offset: hex bytes | ascii |`
+- parse and decode a hex string passed as arguments
+- optionally disable the ASCII column with `-a`
+- build binaries for multiple platforms with the included script
 
-## Quick start
+## Install
 
-### Install
+Install the binary directly from GitHub:
 
 ```bash
-go mod tidy
+go install github.com/TakuHata/hexdump@latest
 ```
 
-### Build
+If the binary is not in your `PATH`, make sure Go's bin directory is added, typically:
+
+```bash
+export PATH="$(go env GOPATH)/bin:$PATH"
+```
+
+## Build from source
+
+```bash
+go build -o hexdump .
+```
+
+Or use the bundled build script:
 
 ```bash
 ./build.sh
 ```
 
-### Run
-
-Dump a file:
-
-```bash
-./hexdump -f somefile.bin
-```
-
-Dump a file without ASCII output:
-
-```bash
-./hexdump -f somefile.bin -a
-```
-
-Decode a hex string:
-
-```bash
-./hexdump 48656c6c6f20776f726c6421
-```
-
-Or with spaces:
-
-```bash
-./hexdump 48 65 6c 6c 6f 20 77 6f 72 6c 64 21
-```
-
-## Example output
-
-```text
-00000000: 48 65 6c 6c 6f 2c 20 57 6f 72 6c 64 21 0a | Hello, World!.|
-```
-
-## Supported platforms
-
-The included build script targets:
+The script generates binaries for:
 
 - Windows AMD64
 - Windows 386
@@ -77,12 +48,44 @@ The included build script targets:
 - macOS AMD64
 - macOS ARM64
 
+## Usage
+
+### Dump a file
+
+```bash
+hexdump -f somefile.bin
+```
+
+### Dump a file without ASCII output
+
+```bash
+hexdump -f somefile.bin -a
+```
+
+### Decode a hex string
+
+```bash
+hexdump 48656c6c6f20776f726c6421
+```
+
+You can also pass the hex value as separate arguments:
+
+```bash
+hexdump 48 65 6c 6c 6f 20 77 6f 72 6c 64 21
+```
+
+## Example output
+
+```text
+00000000: 48 65 6c 6c 6f 2c 20 57 6f 72 6c 64 21 0a | Hello, World!.|
+```
+
 ## Testing
 
 ```bash
 go test ./...
 ```
 
-## Project status
+## Notes
 
-This project is intentionally lightweight and focused on a single task: making raw binary content readable in a terminal with minimal friction.
+This project is intentionally lightweight and focused on a single goal: making raw binary data easy to inspect in a terminal.
